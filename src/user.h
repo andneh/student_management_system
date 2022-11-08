@@ -22,7 +22,7 @@ typedef struct {
 } user;
 
 user root = {0,    admin, "root",      "root",
-             "Ro", "Ot",  "xXxxXxxXx", "root@root.root"};
+             "Ro", "Ot",  "xxxxxxxxx", "root@root.root"};
 
 char *user_set_string(char *string) {
   char *ptr = malloc(sizeof(string));
@@ -64,9 +64,14 @@ void user_show(user *self) {
 }
 
 void user_destruction(user *self) {
+  self->id = 0;
+  self->status = student;
   free(self->login);
   free(self->pass_hash);
   free(self->first_name);
   free(self->last_name);
   free(self->email);
+  for (int i = 0; i != 9; i++) {
+    self->phone[i] = 'x';
+  }
 }

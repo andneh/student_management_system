@@ -14,17 +14,6 @@ typedef struct {
 
 database user_database = {-1, NULL, 0};
 
-void show_users() {
-  if (user_database.users == NULL) {
-    printf("NO USERS\n");
-  } else {
-    for (int i = 0; i != user_database.cap; i++) {
-      user_show(&user_database.users[i]);
-      printf("\n");
-    }
-  }
-}
-
 void add_user(user_status status, char *login, char *pass_hash,
               char *first_name, char *last_name, char *phone, char *email) {
 
@@ -67,6 +56,16 @@ void import_users() {
   fclose(dump);
 }
 
+void delete_user(int id) {
+  if (user_database.users == NULL) {
+    printf("NO USERS\n");
+  } else if (user_database.users[id].id == 0) {
+    printf("Delete another ID\n");
+  } else {
+    user_destruction(&user_database.users[id]);
+  }
+}
+
 void export_users() {
   FILE *dump = fopen("./data/users.hex", "wb+");
   if (dump == NULL) {
@@ -74,22 +73,34 @@ void export_users() {
     exit(EXIT_FAILURE);
   }
 
-  for (int i = 1; i != user_database.cap; i++) {
-    fprintf(dump, "%u%s", user_database.users[i].status, SEP);
-    fprintf(dump, "%s%s", user_database.users[i].login, SEP);
-    fprintf(dump, "%s%s", user_database.users[i].pass_hash, SEP);
-    fprintf(dump, "%s%s", user_database.users[i].first_name, SEP);
-    fprintf(dump, "%s%s", user_database.users[i].last_name, SEP);
-    fprintf(dump, "%s%s", user_database.users[i].phone, SEP);
-    fprintf(dump, "%s\n", user_database.users[i].email);
+  for (int i = 0; i != user_database.cap; i++) {
+    if (user_database.users[i].id != 0) {
+      fprintf(dump, "%u%s", user_database.users[i].status, SEP);
+      fprintf(dump, "%s%s", user_database.users[i].login, SEP);
+      fprintf(dump, "%s%s", user_database.users[i].pass_hash, SEP);
+      fprintf(dump, "%s%s", user_database.users[i].first_name, SEP);
+      fprintf(dump, "%s%s", user_database.users[i].last_name, SEP);
+      fprintf(dump, "%s%s", user_database.users[i].phone, SEP);
+      fprintf(dump, "%s\n", user_database.users[i].email);
+      user_destruction(&user_database.users[i]);
+    }
   }
   fclose(dump);
 
-  for (int i = 0; i != user_database.cap; i++) {
-    user_destruction(&user_database.users[i]);
-  }
-
   free(user_database.users);
+}
+
+void show_users() {
+  if (user_database.users == NULL) {
+    printf("NO USERS\n");
+  } else {
+    for (int i = 0; i != user_database.cap; i++) {
+      if (user_database.users[i].id != 0) {
+        user_show(&user_database.users[i]);
+        printf("\n");
+      }
+    }
+  }
 }
 
 int login(char *login, char *password) { return 0; }

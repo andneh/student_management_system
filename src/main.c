@@ -9,7 +9,8 @@ char *pass_hash(char *pass) {
 }
 
 int main() {
-  // import_users();
+  delete_user(3);
+  import_users();
 
   // add_user(student, "andrew", "12345", "Andrii", "Stoilaky", "000111333",
   //          "adnsrii@h.h");
@@ -19,7 +20,11 @@ int main() {
   //          "kolia@h.h");
 
   // user_destruction(&user_database.users[1]);
+
+  delete_user(3);
+  delete_user(4);
+  delete_user(3);
   show_users();
-  // export_users();
+  export_users();
   return 0;
 }
