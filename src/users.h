@@ -1,9 +1,10 @@
 #include "user.h"
-// #include <openssl/rsa.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define SEP "|"
 
 typedef struct {
   int size;
@@ -11,29 +12,23 @@ typedef struct {
   int cap;
 } database;
 
-const char sep[] = "|";
-const char endl[] = ";";
-database user_database;
+database user_database = {0, &root, 1};
 
-char *pass_hash(char *pass) {
-  // rsa.h
-  return pass;
-}
+// void init_database() {
+//   user_database.cap = 1;
+//   user_database.users =
+//       calloc(1, user_database.cap * sizeof(*user_database.users));
+//   if (user_database.users == NULL) {
+//     fprintf(stderr, "INITIALIZING USER DATABASE ERROR: %s\n",
+//     strerror(errno)); exit(EXIT_FAILURE);
+//   }
+//   user_init(&user_database.users[0], 0, "root", pass_hash("root"), "ro",
+//   "ot",
+//             admin, "111000333", "root@example.com");
+// }
 
-void init_database() {
-  user_database.cap = 1;
-  user_database.users =
-      calloc(1, user_database.cap * sizeof(*user_database.users));
-  if (user_database.users == NULL) {
-    fprintf(stderr, "INITIALIZING USER DATABASE ERROR: %s\n", strerror(errno));
-    exit(EXIT_FAILURE);
-  }
-  user_init(&user_database.users[0], 0, "root", pass_hash("root"), "ro", "ot",
-            admin, "111000333", "root@example.com");
-}
-
-void add_user(char *login, char *pass_hash, char *first_name, char *last_name,
-              user_status status, char *phone, char *email) {
+void add_user(user_status status, char *login, char *pass_hash,
+              char *first_name, char *last_name, char *phone, char *email) {
   user_database.cap += 1;
   user_database.users = realloc(
       user_database.users, (user_database.cap * sizeof(*user_database.users)));
@@ -42,8 +37,14 @@ void add_user(char *login, char *pass_hash, char *first_name, char *last_name,
     exit(EXIT_FAILURE);
   }
   user_init(&user_database.users[user_database.cap - 1],
-            user_database.users[user_database.cap - 2].id + 1, login, pass_hash,
-            first_name, last_name, status, phone, email);
+            (user_database.users[user_database.cap - 2].id + 1), status, login,
+            pass_hash, first_name, last_name, phone, email);
+}
+
+void show_users() {
+  for (int i = 0; i != user_database.cap; i++) {
+    user_show(&user_database.users[i]);
+  }
 }
 
 void import_users() {
@@ -52,17 +53,15 @@ void import_users() {
     fprintf(stderr, "DUMP FILE ERROR: %s\n", strerror(errno));
     exit(EXIT_FAILURE);
   }
-  // printf("file opened\n");
-  // fread(&user_database, sizeof(user_database), 1, dump);
-  char buffer[150];
+  char buffer[100];
   while (fgets(buffer, 150, dump)) {
-    user_status status = atoi(strtok(buffer, sep));
-    char *login = strtok(NULL, sep);
-    char *pass_hash = strtok(NULL, sep);
-    char *first_name = strtok(NULL, sep);
-    char *last_name = strtok(NULL, sep);
-    char *phone = strtok(NULL, sep);
-    char *email = strtok(NULL, endl);
+    user_status status = atoi(strtok(buffer, SEP));
+    char *login = strtok(NULL, SEP);
+    char *pass_hash = strtok(NULL, SEP);
+    char *first_name = strtok(NULL, SEP);
+    char *last_name = strtok(NULL, SEP);
+    char *phone = strtok(NULL, SEP);
+    char *email = strtok(NULL, "\n");
 
     add_user(login, pass_hash, first_name, last_name, status, phone, email);
   }
@@ -76,28 +75,21 @@ void export_users() {
     exit(EXIT_FAILURE);
   }
 
-  // printf("file opened\n");
   for (int i = 1; i != user_database.cap; i++) {
-    fprintf(dump, "%u|%s|%s|%s|%s|%s|%s;", user_database.users[i].status,
-            user_database.users[i].login, user_database.users[i].pass_hash,
-            user_database.users[i].first_name, user_database.users[i].last_name,
-            user_database.users[i].phone, user_database.users[i].email);
-    // fwrite(&user_database.users[i], sizeof(user_database.users[i]), 1,
-    // dump);
+    fprintf(dump, "%u%s", user_database.users[i].status, SEP);
+    fprintf(dump, "%s%s", user_database.users[i].login, SEP);
+    fprintf(dump, "%s%s", user_database.users[i].pass_hash, SEP);
+    fprintf(dump, "%s%s", user_database.users[i].first_name, SEP);
+    fprintf(dump, "%s%s", user_database.users[i].last_name, SEP);
+    fprintf(dump, "%s%s", user_database.users[i].phone, SEP);
+    fprintf(dump, "%s\n", user_database.users[i].email);
   }
-
   fclose(dump);
 
   for (int i = 0; i != user_database.cap; i++) {
     user_destruction(&user_database.users[i]);
   }
   free(user_database.users);
-}
-
-void show_users() {
-  for (int i = 0; i != user_database.cap; i++) {
-    user_show(&user_database.users[i]);
-  }
 }
 
 int login(char *login, char *password) { return 0; }

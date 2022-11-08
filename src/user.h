@@ -12,14 +12,17 @@ typedef enum {
 
 typedef struct {
   int id;
+  user_status status;
   char *login;
   char *pass_hash;
   char *first_name;
   char *last_name;
-  user_status status;
   char phone[9];
   char *email;
 } user;
+
+user root = {0,    admin, "root",      "root",
+             "Ro", "Ot",  "xXxxXxxXx", "root@root.root"};
 
 char *user_set_string(char *string) {
   char *ptr = malloc(sizeof(string));
@@ -31,9 +34,9 @@ char *user_set_string(char *string) {
   return ptr;
 }
 
-void user_init(user *self, int id, char *login, char *pass_hash,
-               char *first_name, char *last_name, user_status status,
-               char *phone, char *email) {
+void user_init(user *self, int id, user_status status, char *login,
+               char *pass_hash, char *first_name, char *last_name, char *phone,
+               char *email) {
   self->id = id;
   self->status = status;
 
@@ -56,13 +59,19 @@ void user_show(user *self) {
   printf("hash:\t%s\n", self->pass_hash);
   printf("first:\t%s\n", self->first_name);
   printf("last:\t%s\n", self->last_name);
-  printf("email:\t%s\n", self->email);
   printf("phone:\t%s\n\n", self->phone);
+  printf("email:\t%s\n", self->email);
 }
+
 void user_destruction(user *self) {
+  self->id = 0;
+  self->status = student;
   free(self->login);
   free(self->pass_hash);
   free(self->first_name);
   free(self->last_name);
   free(self->email);
+  for (int i = 0; i != 9; i++) {
+    self->phone[i] = 'x';
+  }
 }
