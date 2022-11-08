@@ -9,7 +9,6 @@ char *pass_hash(char *pass) {
 }
 
 int main() {
-  // init_database();
   // import_users();
 
   // add_user(student, "andrew", "12345", "Andrii", "Stoilaky", "000111333",

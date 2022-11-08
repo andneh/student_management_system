@@ -59,19 +59,14 @@ void user_show(user *self) {
   printf("hash:\t%s\n", self->pass_hash);
   printf("first:\t%s\n", self->first_name);
   printf("last:\t%s\n", self->last_name);
-  printf("phone:\t%s\n\n", self->phone);
+  printf("phone:\t%s\n", self->phone);
   printf("email:\t%s\n", self->email);
 }
 
 void user_destruction(user *self) {
-  self->id = 0;
-  self->status = student;
   free(self->login);
   free(self->pass_hash);
   free(self->first_name);
   free(self->last_name);
   free(self->email);
-  for (int i = 0; i != 9; i++) {
-    self->phone[i] = 'x';
-  }
 }
