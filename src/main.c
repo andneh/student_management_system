@@ -1,5 +1,5 @@
 #include "./marks.h"
-#include "./users.h"
+#include "./users/database.h"
 #include <stdio.h>
 // #include <openssl/rsa.h>
 
@@ -9,9 +9,7 @@ char *pass_hash(char *pass) {
 }
 
 int main() {
-  delete_user(3);
   import_users();
-
   // add_user(student, "andrew", "12345", "Andrii", "Stoilaky", "000111333",
   //          "adnsrii@h.h");
   // add_user(student, "sabi", "12345", "Sabina", "Stoilaky", "000111333",
@@ -19,11 +17,9 @@ int main() {
   // add_user(teacher, "kolia", "12345", "Kolia", "Stoilaky", "000111333",
   //          "kolia@h.h");
 
-  // user_destruction(&user_database.users[1]);
-
-  delete_user(3);
-  delete_user(4);
-  delete_user(3);
+  // delete_user(3);
+  // delete_user(4);
+  // delete_user(20);
   show_users();
   export_users();
   return 0;
