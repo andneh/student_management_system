@@ -7,12 +7,12 @@
 #define SEP "|"
 
 typedef struct {
-  int size;
-  user *users;
   int cap;
+  user *users;
+  int size;
 } database;
 
-database user_database = {0, &root, 1};
+database user_database = {1, &root, 0};
 
 // void init_database() {
 //   user_database.cap = 1;
@@ -63,7 +63,7 @@ void import_users() {
     char *phone = strtok(NULL, SEP);
     char *email = strtok(NULL, "\n");
 
-    add_user(login, pass_hash, first_name, last_name, status, phone, email);
+    add_user(status, login, pass_hash, first_name, last_name, phone, email);
   }
   fclose(dump);
 }
