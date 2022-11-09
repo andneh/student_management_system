@@ -31,6 +31,7 @@ void add_user(user_status status, char *login, char *pass_hash,
     fprintf(stderr, "ADDING USER TO DATABASE ERROR: %s\n", strerror(errno));
     exit(EXIT_FAILURE);
   }
+  // TODO LOGIN CHECK @nehalch
   user_init(&user_database.users[user_database.cap - 1], user_database.cap - 1,
             status, login, pass_hash, first_name, last_name, phone, email);
 }
@@ -58,15 +59,18 @@ void import_users() {
   }
 }
 
-void delete_user(int id) {
+void delete_user(char *login_del) {
   if (user_database.users == NULL) {
-    printf("NO USERS\n");
-  } else if (user_database.users[id].id == 0) {
-    printf("Delete another ID\n");
-  } else if (id > user_database.cap) {
-    printf("Delete another ID\n");
+    printf("DATABASE EMPTY!\n");
   } else {
-    user_destruction(&user_database.users[id]);
+    for (int i = 0; i != user_database.cap; i++) {
+      // TODO LOGIN IF CHECK @nehalch
+      if (user_database.users[i].login == login_del) {
+        user_destruction(&user_database.users[i]);
+        return;
+      }
+    }
+    printf("USER NOT FOUND!\n");
   }
 }
 

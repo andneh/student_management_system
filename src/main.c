@@ -17,7 +17,7 @@ int main() {
   // add_user(teacher, "kolia", "12345", "Kolia", "Stoilaky", "000111333",
   //          "kolia@h.h");
 
-  // delete_user(3);
+  delete_user("andrew");
   // delete_user(4);
   // delete_user(20);
   show_users();
