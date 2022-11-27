@@ -1,5 +1,5 @@
-#include "./marks.h"
-#include "./users/database.h"
+#include "./marks.hpp"
+#include "./users/database.hpp"
 #include <stdio.h>
 // #include <openssl/rsa.h>
 
